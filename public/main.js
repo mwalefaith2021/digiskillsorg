@@ -166,6 +166,24 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   });
 })();
 
+// Ensure marquee has duplicated content for smooth continuous scroll
+(function(){
+  try{
+    const track = document.querySelector('.marquee-track');
+    if(!track) return;
+    // If track content is shorter than container, duplicate to allow seamless scrolling
+    const container = document.querySelector('.marquee');
+    if(!container) return;
+    // Only duplicate once
+    if(!track.dataset.duplicated){
+      track.dataset.duplicated = 'true';
+      // Duplicate children
+      const clone = track.innerHTML;
+      track.insertAdjacentHTML('beforeend', clone);
+    }
+  }catch(err){ console.error('Marquee duplication error', err); }
+})();
+
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhKu0Wxayqdaaefbu6SGUc4VEEr0X0bEVnzFXlWp2zwtdm3zaOby-0Rb3IbeHl0IP/exec";
 
 async function sendToSheet(payload, statusEl) {
