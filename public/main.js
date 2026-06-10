@@ -20,53 +20,40 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 // Hero slider
 (function(){
-  const slides = document.querySelectorAll('#heroSlides .hero-slide');
-  const dots = document.querySelectorAll('#heroDots button');
-  if(!slides.length) return;
-  let i = 0;
-  const go = (n)=>{
-    slides[i].classList.remove('active'); dots[i]?.classList.remove('active');
-    i = (n + slides.length) % slides.length;
-    slides[i].classList.add('active'); dots[i]?.classList.add('active');
-  };
-  dots.forEach(d=>d.addEventListener('click',()=>go(+d.dataset.i)));
-  setInterval(()=>go(i+1), 5500);
+  try{
+    const slides = document.querySelectorAll('#heroSlides .hero-slide');
+    const dots = document.querySelectorAll('#heroDots button');
+    if(!slides.length) return;
+    let i = 0;
+    const go = (n)=>{
+      if(slides[i]) slides[i].classList.remove('active');
+      if(dots[i]) dots[i].classList.remove('active');
+      i = (n + slides.length) % slides.length;
+      if(slides[i]) slides[i].classList.add('active');
+      if(dots[i]) dots[i].classList.add('active');
+    };
+    if(dots && dots.length){ dots.forEach(d=>d.addEventListener('click',()=>go(+d.dataset.i))); }
+    setInterval(()=>go(i+1), 5500);
+  }catch(err){ console.error('Hero slider error', err); }
 })();
 
 // Newsletter
 (function(){
-  const f = document.getElementById('newsletterForm');
-  const note = document.getElementById('newsletterNote');
-  if(!f) return;
-  f.addEventListener('submit',(e)=>{
-  e.preventDefault();
-
-  const name = f.querySelector('input[name="newsletter-name"]');
-  const email = f.querySelector('input[type="email"]');
-
-  if (!name.value.trim()) {
-    note.textContent = 'Please enter your name.';
-    note.style.color = '#ff9f3d';
-    return;
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
-    note.textContent = 'Please enter a valid email.';
-    note.style.color = '#ff9f3d';
-    return;
-  }
-
-  sendToSheet({
-    source: "newsletter",
-    name: name.value,
-    email: email.value,
-    org: "",
-    country: "",
-    message: "Newsletter signup"
-  }, note);
-
-  f.reset();
-});
+  try{
+    const f = document.getElementById('newsletterForm');
+    const note = document.getElementById('newsletterNote');
+    if(!f) return;
+    f.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      const name = f.querySelector('input[name="newsletter-name"]');
+      const email = f.querySelector('input[type="email"]');
+      if(!note) return;
+      if(!name || !name.value || !name.value.trim()){ note.textContent = 'Please enter your name.'; note.style.color = '#ff9f3d'; return; }
+      if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())){ note.textContent = 'Please enter a valid email.'; note.style.color = '#ff9f3d'; return; }
+      sendToSheet({ source: "newsletter", name: name.value, email: email.value, org: "", country: "", message: "Newsletter signup" }, note);
+      f.reset();
+    });
+  }catch(err){ console.error('Newsletter error', err); }
 })();
 
 // Insights tabs
@@ -126,7 +113,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
     const status = document.getElementById('ivStatus');
 
-    if(!form.name.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())){
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())){
       status.style.color='#f29127';
       status.textContent='Please add your name and a valid email.';
       return;
@@ -143,7 +130,11 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
     form.reset();
   });
-})();
+
+    }
+  })();
+
+  // Contact form
 
 
 // Contact form
@@ -194,4 +185,5 @@ async function sendToSheet(payload, statusEl) {
       statusEl.style.color = "red";
     }
   }
+
 }
