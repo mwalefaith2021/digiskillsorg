@@ -39,13 +39,34 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   const note = document.getElementById('newsletterNote');
   if(!f) return;
   f.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const email = f.email.value.trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent='Please enter a valid email.'; note.style.color='#ff9f3d'; return; }
-    note.textContent='Thanks! You\'re on the list — we\'ll be in touch.';
-    note.style.color='';
-    f.reset();
-  });
+  e.preventDefault();
+
+  const name = f.querySelector('input[name="newsletter-name"]');
+  const email = f.querySelector('input[type="email"]');
+
+  if (!name.value.trim()) {
+    note.textContent = 'Please enter your name.';
+    note.style.color = '#ff9f3d';
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+    note.textContent = 'Please enter a valid email.';
+    note.style.color = '#ff9f3d';
+    return;
+  }
+
+  sendToSheet({
+    source: "newsletter",
+    name: name.value,
+    email: email.value,
+    org: "",
+    country: "",
+    message: "Newsletter signup"
+  }, note);
+
+  f.reset();
+});
 })();
 
 // Insights tabs
@@ -99,15 +120,31 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     panel.scrollIntoView({behavior:'smooth',block:'start'});
   }));
   const form = document.getElementById('involvedForm');
-  if(form){ form.addEventListener('submit',(e)=>{
+  if(form){
+  form.addEventListener('submit',(e)=>{
     e.preventDefault();
+
+    const status = document.getElementById('ivStatus');
+
     if(!form.name.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())){
-      status.style.color='#f29127'; status.textContent='Please add your name and a valid email.'; return;
+      status.style.color='#f29127';
+      status.textContent='Please add your name and a valid email.';
+      return;
     }
-    status.style.color=''; status.textContent='Thanks! We\'ll be in touch shortly.';
+
+    sendToSheet({
+      source: "involved_form",
+      name: form.name.value,
+      email: form.email.value,
+      org: form.org.value,
+      country: form.country.value,
+      message: form.message.value
+    }, status);
+
     form.reset();
-  });}
+  });
 })();
+
 
 // Contact form
 (function(){
@@ -137,3 +174,24 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     });
   });
 })();
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhKu0Wxayqdaaefbu6SGUc4VEEr0X0bEVnzFXlWp2zwtdm3zaOby-0Rb3IbeHl0IP/exec";
+
+async function sendToSheet(payload, statusEl) {
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    if (statusEl) {
+      statusEl.textContent = "Thanks! You're on the list.";
+      statusEl.style.color = "";
+    }
+  } catch (err) {
+    if (statusEl) {
+      statusEl.textContent = "Something went wrong. Try again.";
+      statusEl.style.color = "red";
+    }
+  }
+}

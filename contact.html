@@ -87,7 +87,7 @@
       <p>Subscribe for updates and opportunities.</p>
       <form class="newsletter-form footer-newsletter" onsubmit="event.preventDefault();const name=this.querySelector('input[name=\'newsletter-name\']');const i=this.querySelector('input[type=\'email\']');const n=this.nextElementSibling;if(!name||!name.value.trim()){n.textContent='Please enter your name.';n.style.color='#ff9f3d';return;}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(i.value.trim())){n.textContent='Please enter a valid email.';n.style.color='#ff9f3d';return;}n.textContent='Thanks! You\'re on the list.';n.style.color='';this.reset();">
         <input name="newsletter-name" type="text" placeholder="Name" aria-label="Name" required />
-        <input type="email" placeholder="Enter your email" aria-label="Email" required />
+        <input name="email" type="text" placeholder="Enter your email" aria-label="Email" required />
         <button class="btn btn-primary btn-sm" type="submit">Join</button>
       </form>
       <p class="newsletter-note" style="margin-top:.5rem;min-height:1em;font-size:.82rem"></p>
