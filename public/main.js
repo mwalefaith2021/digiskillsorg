@@ -151,10 +151,10 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     // send to Google Sheet
     sendToSheet({ source: 'contact', name: f.name.value, email: f.email.value, org: f.org ? f.org.value : '', country: f.country ? f.country.value : '', message: f.message.value }, s);
     // also open mail client for convenience
-    const body = encodeURIComponent(`From: ${f.name.value}\nEmail: ${f.email.value}\n\n${f.message.value}`);
-    const subject = encodeURIComponent(f.subject.value || 'Website contact');
-    window.location.href = `mailto:digiskillsorg@gmail.com?subject=${subject}&body=${body}`;
-    s.style.color=''; s.textContent='Opening your email client...';
+    //const body = encodeURIComponent(`From: ${f.name.value}\nEmail: ${f.email.value}\n\n${f.message.value}`);
+    //const subject = encodeURIComponent(f.subject.value || 'Website contact');
+    //window.location.href = `mailto:digiskillsorg@gmail.com?subject=${subject}&body=${body}`;
+    //s.style.color=''; s.textContent='Opening your email client...';
   });
 })();
 
