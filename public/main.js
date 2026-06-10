@@ -78,6 +78,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     media:{ t:'Events, Media & CSR', d:'Tell us about the collaboration — events, storytelling or CSR programs.', alt:'mailto:digiskillsorg@gmail.com?subject=Media%20%26%20CSR%20collaboration' },
     school:{ t:'Schools & Organizations', d:'Tell us about your school or organization and how you\'d like to partner.', alt:'mailto:digiskillsorg@gmail.com?subject=Schools%20%26%20Organizations%20partnership' }
   };
+  if(alt) alt.style.display = 'none';
   cards.forEach(c=>c.addEventListener('click',()=>{
     cards.forEach(x=>x.classList.remove('selected'));
     c.classList.add('selected');
@@ -85,7 +86,14 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     eye.textContent = c.querySelector('h3').textContent.toUpperCase();
     title.textContent = m.t;
     desc.textContent = m.d;
-    if(alt){ alt.href = m.alt; }
+    if(alt){
+      if(c.dataset.role === 'volunteer'){
+        alt.href = m.alt;
+        alt.style.display = '';
+      } else {
+        alt.style.display = 'none';
+      }
+    }
     panel.classList.add('visible');
     status.textContent='';
     panel.scrollIntoView({behavior:'smooth',block:'start'});
