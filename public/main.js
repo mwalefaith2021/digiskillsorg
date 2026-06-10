@@ -112,13 +112,14 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     e.preventDefault();
 
     const status = document.getElementById('ivStatus');
-
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.value.trim())){
+    // validate name and email
+    const nameVal = form.querySelector('input[name="name"]');
+    const emailVal = form.querySelector('input[name="email"]');
+    if(!nameVal || !nameVal.value.trim() || !emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal.value.trim())){
       status.style.color='#f29127';
       status.textContent='Please add your name and a valid email.';
       return;
     }
-
     sendToSheet({
       source: "involved_form",
       name: form.name.value,
@@ -147,11 +148,33 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     if(!f.name.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim()) || !f.message.value.trim()){
       s.style.color='#f29127'; s.textContent='Please complete name, valid email, and message.'; return;
     }
+    // send to Google Sheet
+    sendToSheet({ source: 'contact', name: f.name.value, email: f.email.value, org: f.org ? f.org.value : '', country: f.country ? f.country.value : '', message: f.message.value }, s);
+    // also open mail client for convenience
     const body = encodeURIComponent(`From: ${f.name.value}\nEmail: ${f.email.value}\n\n${f.message.value}`);
     const subject = encodeURIComponent(f.subject.value || 'Website contact');
     window.location.href = `mailto:digiskillsorg@gmail.com?subject=${subject}&body=${body}`;
     s.style.color=''; s.textContent='Opening your email client...';
   });
+})();
+
+// Footer newsletter forms (multiple pages)
+(function(){
+  try{
+    document.querySelectorAll('.footer-newsletter').forEach(f=>{
+      f.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const name = f.querySelector('input[name="newsletter-name"]');
+        const email = f.querySelector('input[name="email"]');
+        const note = f.nextElementSibling; // paragraph with newsletter-note
+        if(!note) return;
+        if(!name || !name.value.trim()){ note.textContent='Please enter your name.'; note.style.color='#ff9f3d'; return; }
+        if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())){ note.textContent='Please enter a valid email.'; note.style.color='#ff9f3d'; return; }
+        sendToSheet({ source: 'newsletter', name: name.value, email: email.value, org: '', country: '', message: 'Footer newsletter' }, note);
+        f.reset();
+      });
+    });
+  }catch(err){ console.error('Footer newsletter handlers error', err); }
 })();
 
 // Footer contact reveal — click icon/label to toggle value
@@ -184,7 +207,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   }catch(err){ console.error('Marquee duplication error', err); }
 })();
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhKu0Wxayqdaaefbu6SGUc4VEEr0X0bEVnzFXlWp2zwtdm3zaOby-0Rb3IbeHl0IP/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyO4nElAwt6IaxjwTeDB2fxe3PDHFYBdAwZJFr8ZPo_YxvVzY64ciMjAY5PVQ_yOuv/exec";
 
 async function sendToSheet(payload, statusEl) {
   try {
