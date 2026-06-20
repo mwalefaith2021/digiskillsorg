@@ -184,7 +184,7 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
       e.preventDefault();
       const key = btn.dataset.reveal;
       const val = btn.parentElement.querySelector(`.contact-reveal-val[data-target="${key}"]`);
-      if(val) val.classList.toggle('show');
+      if(val) val.classList.toggle('show'); 
     });
   });
 })();
