@@ -407,9 +407,9 @@ p{margin:0 0 1em;color:var(--fg-soft)}
 .certificate-preview-panel{margin-top:2rem;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));padding:1rem;overflow:hidden}
 .certificate-preview-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
 .certificate-preview-header h3{margin:0;color:#fff}
-.certificate-preview-shell{position:relative;display:flex;align-items:center;justify-content:center;min-height:380px;border-radius:16px;background:linear-gradient(180deg,#f8f8f8,#eaeef2);border:1px solid rgba(8,19,30,.08);padding:1rem;overflow:hidden}
+.certificate-preview-shell{position:relative;display:block;text-align:center;min-height:380px;border-radius:16px;background:linear-gradient(180deg,#f8f8f8,#eaeef2);border:1px solid rgba(8,19,30,.08);padding:1rem;overflow:hidden}
 .certificate-preview-loading,.certificate-preview-fallback{display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;color:#1b2a3b;font-weight:600}
-#certificatePreviewCanvas{display:block;max-width:100%;max-height:760px;border-radius:12px;background:#fff;box-shadow:0 18px 40px rgba(7,14,24,.18)}
+#certificatePreviewCanvas{display:block;margin:0 auto;max-width:100%;max-height:760px;width:auto;height:auto;border-radius:12px;background:#fff;box-shadow:0 18px 40px rgba(7,14,24,.18)}
 
 .certificate-not-found{margin-top:2rem;padding:2rem;text-align:center;color:#fff}
 .certificate-not-found i{font-size:2rem;color:#ff8d7a;margin-bottom:1rem}
