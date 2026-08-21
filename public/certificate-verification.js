@@ -23,11 +23,70 @@ function setStatus(message, tone = "muted") {
   status.className = `verification-status ${tone}`;
 }
 
+function resetPreview() {
+  const canvas = document.getElementById("certificatePreviewCanvas");
+  const loading = document.getElementById("certificatePreviewLoading");
+  const fallback = document.getElementById("certificatePreviewFallback");
+
+  if (canvas) {
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.hidden = true;
+  }
+
+  if (loading) loading.hidden = true;
+  if (fallback) fallback.classList.add("hidden");
+}
+
+async function renderPdfPreview(pdfUrl) {
+  const canvas = document.getElementById("certificatePreviewCanvas");
+  const loading = document.getElementById("certificatePreviewLoading");
+  const fallback = document.getElementById("certificatePreviewFallback");
+
+  if (!canvas || !pdfUrl) {
+    resetPreview();
+    return;
+  }
+
+  if (!window.pdfjsLib) {
+    console.warn("PDF.js not loaded yet");
+    if (fallback) fallback.classList.remove("hidden");
+    if (loading) loading.hidden = true;
+    canvas.hidden = true;
+    return;
+  }
+
+  if (loading) loading.hidden = false;
+  if (fallback) fallback.classList.add("hidden");
+  canvas.hidden = true;
+
+  try {
+    const pdfjsLib = window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1.05 });
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const context = canvas.getContext("2d");
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    canvas.hidden = false;
+    if (loading) loading.hidden = true;
+  } catch (error) {
+    console.error("PDF preview rendering failed:", error);
+    if (fallback) fallback.classList.remove("hidden");
+    if (loading) loading.hidden = true;
+    canvas.hidden = true;
+  }
+}
+
 function showResult(record) {
   const result = document.getElementById("certificateResult");
   const notFound = document.getElementById("certificateNotFound");
-  const viewer = document.getElementById("certificateViewer");
-  if (!result || !notFound || !viewer) return;
+  if (!result || !notFound) return;
 
   result.classList.remove("hidden");
   notFound.classList.add("hidden");
@@ -42,13 +101,14 @@ function showResult(record) {
 
   const downloadLink = document.getElementById("certificateDownloadLink");
   const pdfUrl = record.pdf_url || "";
-  viewer.src = pdfUrl;
 
   if (downloadLink) {
     downloadLink.href = pdfUrl;
     const fileName = (record.pdf_file_name || record.participant_name || "certificate").replace(/\.pdf$/i, "") + ".pdf";
     downloadLink.setAttribute("download", fileName);
   }
+
+  renderPdfPreview(pdfUrl);
 }
 
 function showNoResult() {
@@ -58,6 +118,7 @@ function showNoResult() {
 
   result.classList.add("hidden");
   notFound.classList.remove("hidden");
+  resetPreview();
 }
 
 function formatDate(dateString) {
@@ -145,10 +206,8 @@ function setupSearchForm() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const viewer = document.getElementById("certificateViewer");
-  if (viewer) viewer.src = "";
-
+  resetPreview();
   setupSearchForm();
   showNoResult();
-  setStatus("Try searching by participant name such as MOSES KATONGO or AMINA NDLOVU.", "muted");
+  setStatus("Enter a participant name to search for a certificate.", "muted");
 });

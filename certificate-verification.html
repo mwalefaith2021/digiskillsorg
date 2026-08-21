@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/public/styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
   <header class="navbar">
@@ -44,11 +45,11 @@
           <form id="certificateSearchForm" class="certificate-search-form" novalidate>
             <label for="certificateQuery">Participant name</label>
             <div class="search-row">
-              <input id="certificateQuery" name="certificateQuery" type="text" placeholder="Search by full name, e.g. MOSES KATONGO" aria-label="Search certificates by participant name" />
+              <input id="certificateQuery" name="certificateQuery" type="text" placeholder="Enter participant name" aria-label="Search certificates by participant name" />
               <button type="submit" class="btn btn-primary">Search</button>
             </div>
           </form>
-          <p id="verificationStatus" class="verification-status muted" role="status" aria-live="polite">Try searching by participant name such as MOSES KATONGO or AMINA NDLOVU.</p>
+          <p id="verificationStatus" class="verification-status muted" role="status" aria-live="polite">Enter a participant name to search for a certificate.</p>
         </div>
 
         <div id="certificateResult" class="certificate-result hidden reveal">
@@ -88,7 +89,13 @@
               <h3>Certificate preview</h3>
               <a id="certificateDownloadLink" class="btn btn-ghost btn-sm" href="#" download>Download PDF</a>
             </div>
-            <iframe id="certificateViewer" title="Certificate preview" src="" loading="lazy"></iframe>
+            <div class="certificate-preview-shell">
+              <div id="certificatePreviewLoading" class="certificate-preview-loading">Loading certificate...</div>
+              <canvas id="certificatePreviewCanvas" aria-label="Certificate preview"></canvas>
+              <div id="certificatePreviewFallback" class="certificate-preview-fallback hidden">
+                The certificate preview could not be displayed here. Use the download button to open the PDF.
+              </div>
+            </div>
           </div>
         </div>
 
