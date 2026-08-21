@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificate Verification | Digi Skills</title>
+  <meta name="description" content="Verify and download Digi Skills certificates using a participant name." />
+  <link rel="icon" href="/public/assets/digi-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="/" class="brand"><img src="/public/assets/digi-logo.png" alt="Digi Skills" /></a>
+      <nav class="nav-links" id="navLinks">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/get-involved.html">Get Involved</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/certificate-verification.html" class="active">Certificate Verification</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container narrow">
+      <span class="eyebrow">CERTIFICATE VERIFICATION</span>
+      <h1>Verify and download your Digi Skills certificate</h1>
+      <p>Search by participant name to preview the official PDF and confirm completion details.</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="section section-tight">
+      <div class="container narrow">
+        <div class="verification-shell reveal">
+          <form id="certificateSearchForm" class="certificate-search-form" novalidate>
+            <label for="certificateQuery">Participant name</label>
+            <div class="search-row">
+              <input id="certificateQuery" name="certificateQuery" type="text" placeholder="Search by full name, e.g. MOSES KATONGO" aria-label="Search certificates by participant name" />
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </form>
+          <p id="verificationStatus" class="verification-status muted" role="status" aria-live="polite">Try searching by participant name such as MOSES KATONGO or AMINA NDLOVU.</p>
+        </div>
+
+        <div id="certificateResult" class="certificate-result hidden reveal">
+          <div class="certificate-header">
+            <div>
+              <span class="eyebrow eyebrow-green">Verified certificate</span>
+              <h2 id="resultParticipantName">Participant Name</h2>
+            </div>
+            <span class="certificate-badge" id="resultStatus">Valid</span>
+          </div>
+
+          <div class="certificate-details-grid">
+            <div class="detail-box">
+              <span>Accomplishment</span>
+              <strong id="resultProgram">Program</strong>
+            </div>
+            <div class="detail-box">
+              <span>Date issued</span>
+              <strong id="resultIssueDate">--</strong>
+            </div>
+            <div class="detail-box">
+              <span>Date completed</span>
+              <strong id="resultCompletionDate">--</strong>
+            </div>
+            <div class="detail-box">
+              <span>Certificate type</span>
+              <strong id="resultType">Certificate</strong>
+            </div>
+            <div class="detail-box">
+              <span>Issued by</span>
+              <strong id="resultInstitution">Digi Skills Lab</strong>
+            </div>
+          </div>
+
+          <div class="certificate-preview-panel">
+            <div class="certificate-preview-header">
+              <h3>Certificate preview</h3>
+              <a id="certificateDownloadLink" class="btn btn-ghost btn-sm" href="#" download>Download PDF</a>
+            </div>
+            <iframe id="certificateViewer" title="Certificate preview" src="" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div id="certificateNotFound" class="certificate-not-found hidden reveal" aria-live="polite">
+          <i class="fa-solid fa-circle-xmark"></i>
+          <h3>Certificate not found</h3>
+          <p>We could not find a certificate matching your search. Please check the participant name or certificate number and try again.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="/public/assets/digi-logo.png" alt="Digi Skills" class="footer-logo" />
+        <p>A youth-led initiative empowering young Africans through digital literacy, innovation, mentorship and community.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <a href="/about.html">About</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/get-involved.html">Get Involved</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+      <div>
+        <h4>Verification</h4>
+        <a href="/certificate-verification.html">Certificate Search</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p>Email: <a href="mailto:digiskillsorg@gmail.com">digiskillsorg@gmail.com</a></p>
+        <p>Phone: <a href="tel:+26778371431">+267 78 37 14 31</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="year"></span> Digi Skills. All rights reserved.</div>
+  </footer>
+
+  <script src="/public/main.js"></script>
+  <script src="/public/certificate-verification.js"></script>
+</body>
+</html>
