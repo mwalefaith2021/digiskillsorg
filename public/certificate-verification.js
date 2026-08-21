@@ -30,11 +30,18 @@ function resetPreview() {
 
   if (canvas) {
     const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    if (context) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
     canvas.hidden = true;
+    canvas.classList.add("hidden");
   }
 
-  if (loading) loading.hidden = true;
+  if (loading) {
+    loading.hidden = true;
+    loading.classList.add("hidden");
+  }
+
   if (fallback) fallback.classList.add("hidden");
 }
 
@@ -48,17 +55,24 @@ async function renderPdfPreview(pdfUrl) {
     return;
   }
 
+  if (loading) {
+    loading.hidden = false;
+    loading.classList.remove("hidden");
+  }
+
+  if (fallback) fallback.classList.add("hidden");
+  canvas.hidden = true;
+  canvas.classList.add("hidden");
+
   if (!window.pdfjsLib) {
     console.warn("PDF.js not loaded yet");
     if (fallback) fallback.classList.remove("hidden");
-    if (loading) loading.hidden = true;
-    canvas.hidden = true;
+    if (loading) {
+      loading.hidden = true;
+      loading.classList.add("hidden");
+    }
     return;
   }
-
-  if (loading) loading.hidden = false;
-  if (fallback) fallback.classList.add("hidden");
-  canvas.hidden = true;
 
   try {
     const pdfjsLib = window.pdfjsLib;
@@ -74,12 +88,21 @@ async function renderPdfPreview(pdfUrl) {
     await page.render({ canvasContext: context, viewport }).promise;
 
     canvas.hidden = false;
-    if (loading) loading.hidden = true;
+    canvas.classList.remove("hidden");
+
+    if (loading) {
+      loading.hidden = true;
+      loading.classList.add("hidden");
+    }
   } catch (error) {
     console.error("PDF preview rendering failed:", error);
     if (fallback) fallback.classList.remove("hidden");
-    if (loading) loading.hidden = true;
+    if (loading) {
+      loading.hidden = true;
+      loading.classList.add("hidden");
+    }
     canvas.hidden = true;
+    canvas.classList.add("hidden");
   }
 }
 
